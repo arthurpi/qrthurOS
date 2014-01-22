@@ -1,0 +1,8 @@
+#ifndef INCLUDES_SCREEN_H
+# define INCLUDES_SCREEN_H
+
+# define SCREENBASE 0xB8000
+# define SCREENSIZE 0xFA0
+# define SCREENLIM 0xB8FA0
+
+#endif /* INCLUDES_SCREEN_H */
