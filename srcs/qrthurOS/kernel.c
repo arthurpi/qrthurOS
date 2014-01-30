@@ -1,19 +1,27 @@
-extern void scrollup(unsigned int);
-extern void print(char *);
+#include    "gdt.h"
+#include    "screen.h"
 
-extern kY;
-extern kattr;
+int         main(void);
 
-void _start(void)
+void        _start(void)
 {
-  kY = 20;
-  kattr = 0x5E;
-  //print("un message\n");
+  kY = 18;
+  init_idt();
+  init_pic();
+  kputstring("Loading new GDT\n");
+  PIC_remap(0x20, 0x70);
+  init_gdt();
+  __asm__("\
+    movw $0x18, %ax\n\
+    movw %ax, %ss\n\
+    movl $0x20000, %esp\n\
+      ");
+  main();
+}
 
-  kattr = 0x4E;
-  //print("un autre message\n");
-
-//  scrollup(2);
-
+int         main(void)
+{
+  kputstring("New GDT loaded\n");
+  //__asm__ ("sti"::);
   while (1);
 }

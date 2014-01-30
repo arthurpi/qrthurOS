@@ -7,14 +7,10 @@
 jmp start
 %include    "srcs/bootsector/UTIL.INC"
 start:
-    ; Init at 0x07c0
+    ; Init Data Segment at 0x07c0
     mov ax, 0x07c0
     mov ds, ax
     mov es, ax
-    ; Init stack
-    mov ax, 0x8000
-    mov ss, ax ; Stack Segment
-    mov sp, 0x9000 ; Stack pointer
 
     ; Retrieve boot unit
     mov [bootdrv], dl
@@ -32,11 +28,11 @@ start:
     mov es, ax
     mov bx, 0
 
-    mov ah, 2
-    mov al, KSIZE
-    mov ch, 0
-    mov cl, 2
-    mov dh, 0
+    mov ah, 2 ; Read Sectors from Drive
+    mov al, KSIZE ; Number of sector to read (512 bytes each)
+    mov ch, 0 ; Cylinder 1
+    mov cl, 2 ; Sector 2 (First sector contains this boot sector)
+    mov dh, 0 ; Head
     mov dl, [bootdrv]
     int 0x13
     pop es
@@ -64,13 +60,13 @@ start:
     ; Enable Protected Mode
     mov eax, cr0
     or ax, 1
-    mov cr0, eax
+    mov cr0, eax ; Lowest bit of cr0 is now set to 1
 
     jmp next
 
 next:
-    
-    ; Reinit Data segment
+
+    ; Reinit Data segments
     mov ax, 0x10
     mov ds, ax
     mov es, ax
@@ -85,8 +81,8 @@ next:
     jmp dword 0x8:0x1000
 
 ; Variables
-msg: db "Loading kernel...", 13, 10, 0
 bootdrv: db 0
+msg: db "Loading kernel...", 13, 10, 0
 
 gdt:
   db 0, 0, 0, 0, 0, 0, 0, 0
