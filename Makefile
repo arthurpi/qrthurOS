@@ -1,20 +1,20 @@
-SRCS_DIR		=	srcs/
-OBJS_DIR		=	objs/
+SRCS_DIR		=	src/
+OBJS_DIR		=	obj/
 BIN_DIR			=	bin/
 
 
 NAME_KERNEL		=	qrthurOS
-SRCS_KERNEL		=	qrthurOS/kernel.c		\
-					qrthurOS/screen.c		\
-					qrthurOS/memcpy.c		\
-					qrthurOS/gdt.c			\
-					qrthurOS/idt.c			\
-					qrthurOS/isr.c			\
-					qrthurOS/pic.c			\
+SRCS_KERNEL		=	kernel/kernel.c		\
+					lib/screen.c		\
+					lib/memcpy.c		\
+					kernel/gdt.c		\
+					int/idt.c			\
+					int/isr.c			\
+					int/pic.c			\
 					
 OBJS_KERNEL		=	$(addprefix $(OBJS_DIR), $(SRCS_KERNEL:.c=.o))
 
-SRCS_ASM		=	qrthurOS/interrupts_routine.asm
+SRCS_ASM		=	int/interrupts_routine.asm
 
 OBJS_ASM		=	$(addprefix $(OBJS_DIR), $(SRCS_ASM:.asm=.o))
 
@@ -29,7 +29,7 @@ LOGS			=	bochsout.log			\
 
 CC				=	crossgcc
 LD				=	crossld
-CFLAGS			=	-Iincludes/
+CFLAGS			=	-Iinclude/
 
 NASM			=	nasm -f bin
 
@@ -40,6 +40,7 @@ ECHO			=	echo -e
 all:				$(NAME_KERNEL)
 
 $(NAME_KERNEL):		$(OBJS_ASM) $(OBJS_KERNEL)
+					@mkdir -p $(BIN_DIR)
 					$(LD) --oformat binary -Ttext 1000 $(OBJS_KERNEL) $(OBJS_ASM) -o $(BIN_DIR)$(NAME_KERNEL)
 					@$(ECHO) '\033[0;90m> Kernel compiled\n\33[0m'
 
@@ -64,13 +65,15 @@ re:					fclean all
 
 
 $(OBJS_DIR)%.o:		$(SRCS_DIR)%.asm
-					@mkdir -p $(OBJS_DIR)$(NAME_KERNEL)
-					@mkdir -p $(BIN_DIR)
+					@mkdir -p $(OBJS_DIR)kernel
+					@mkdir -p $(OBJS_DIR)int
+					@mkdir -p $(OBJS_DIR)lib
 					nasm -f elf $^ -o $@
 
 $(OBJS_DIR)%.o:		$(SRCS_DIR)%.c
-					@mkdir -p $(OBJS_DIR)$(NAME_KERNEL)
-					@mkdir -p $(BIN_DIR)
+					@mkdir -p $(OBJS_DIR)kernel
+					@mkdir -p $(OBJS_DIR)int
+					@mkdir -p $(OBJS_DIR)lib
 					$(CC) $(CFLAGS) -c $^ -o $@
 
 .PHONY:		all clean fclean re

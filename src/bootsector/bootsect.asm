@@ -5,7 +5,7 @@
 [ORG 0x0]
 
 jmp start
-%include    "srcs/bootsector/UTIL.INC"
+%include    "src/bootsector/UTIL.INC"
 start:
     ; Init Data Segment at 0x07c0
     mov ax, 0x07c0
