@@ -8,10 +8,21 @@ void        isr_default(void)
 
 void        isr_clock(void)
 {
-  kputstring("clock_interrupt\n");
+  static unsigned int tick = 0;
+
+  if (++tick > 99) {
+    kputstring("clock_sec\n");
+    tick = 0;
+  }
 }
 
 void        isr_kb(void)
 {
+  /*
+  uchar c = 0;
+
+  do {
+    c = inb(0x60);
+  } while (c & 0x01 == 0); */
   kputstring("kb_interrupt\n");
 }

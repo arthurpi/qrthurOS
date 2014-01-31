@@ -2,9 +2,9 @@
 #include    "memcpy.h"
 #include    "idt.h"
 
-extern _asm_irq_default;
-extern _asm_irq_0;
-extern _asm_irq_1;
+void    _asm_irq_default(void);
+void    _asm_irq_0(void);
+void    _asm_irq_1(void);
 
 void        set_interrupt_descriptor(u32 lim, u16 selector, u16 flags, idt_t *idt)
 {

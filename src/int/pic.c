@@ -1,21 +1,25 @@
 #include    "pic.h"
 
-static inline void outb(port, val) {
+static inline void outb(unsigned short port, unsigned char val) {
   __asm__ volatile ("\
-      outb %%al, %%dx"
-      : // input
-      : "a" (port), "nD" (val) // output
+      .intel_syntax\n\t\
+      outb %0, %1\n\t\
+      .att_syntax"
+      :
+      : "Nd" (port), "a" (val)
       );
 }
 
-static inline unsigned char inb(port) {
+static inline unsigned char inb(unsigned short port) {
   unsigned char ret;
   __asm__ volatile ("\
-      inb %%dx, %%al"
-      : "=a" (ret) // input
-      : "nD" (port) // output
+      .intel_syntax\n\t\
+      inb %0, %1\n\t\
+      .att_syntax"
+      : "=a" (ret) // output
+      : "Nd" (port) // input
       );
-      return (ret);
+  return (ret);
 }
 
 static inline void io_wait(void) {
@@ -26,8 +30,7 @@ static inline void io_wait(void) {
       ");
 }
 
-
-void PIC_remap(int offset1, int offset2)
+void PIC_remap(unsigned int offset1, unsigned int offset2)
 {
   unsigned char a1, a2;
 
@@ -42,7 +45,7 @@ void PIC_remap(int offset1, int offset2)
   io_wait();
   outb(PIC2_DATA, offset2);                 // ICW2: Slave PIC vector offset
   io_wait();
-  outb(PIC1_DATA, 4);                       // ICW3: tell Master PIC that there is a slave PIC at IRQ2 (0000 0100)
+  outb(PIC1_DATA, 4);                       // ICW3: tell Master PIC that there is a slave PIC at IRQ2(0000 0100)
   io_wait();
   outb(PIC2_DATA, 2);                       // ICW3: tell Slave PIC its cascade identity (0000 0010)
   io_wait();
@@ -53,39 +56,7 @@ void PIC_remap(int offset1, int offset2)
   io_wait();
 
   outb(PIC1_DATA, a1);   // restore saved masks.
+  io_wait();
   outb(PIC2_DATA, a2);
-}
-
-
-void        init_pic(void)
-{
-	/* Initialisation de ICW1 */
-	outb(0x20, 0x11);
-    io_wait();
-	outb(0xA0, 0x11);
-    io_wait();
-
-	/* Initialisation de ICW2 */
-	outb(0x21, 0x20);	/* vecteur de depart = 32 */
-    io_wait();
-	outb(0xA1, 0x70);	/* vecteur de depart = 96 */
-    io_wait();
-
-	/* Initialisation de ICW3 */
-	outb(0x21, 0x04);
-    io_wait();
-	outb(0xA1, 0x02);
-    io_wait();
-
-	/* Initialisation de ICW4 */
-	outb(0x21, 0x01);
-    io_wait();
-	outb(0xA1, 0x01);
-    io_wait();
-
-	/* masquage des interruptions */
-	outb(0x21, 0x0);
-    io_wait();
-	outb(0xA1, 0x0);
-    io_wait();
+  io_wait();
 }

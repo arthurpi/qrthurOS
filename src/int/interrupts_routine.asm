@@ -7,18 +7,18 @@ global _asm_irq_1
 
 _asm_irq_default:
     call isr_default
-    mov ax, 0x20
-    out 0x20, ax
+    mov al, 0x20
+    out 0x20, al
     iret
 
 _asm_irq_0:
     call isr_clock
-    mov ax, 0x20
-    out 0x20, ax
+    mov al, 0x20
+    out 0x20, al
     iret
 
 _asm_irq_1:
     call isr_kb
-    mov ax, 0x20
-    out 0x20, ax
+    mov al, 0x20
+    out 0x20, al
     iret

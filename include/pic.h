@@ -23,7 +23,6 @@
 #define ICW4_BUF_MASTER 0x0C        /* Buffered mode/master */
 #define ICW4_SFNM   0x10        /* Special fully nested (not) */
 
-void        init_pic(void);
-void        PIC_remap(int, int);
+void        PIC_remap(unsigned int, unsigned int);
 
 #endif /* INCLUDES_PIC */
