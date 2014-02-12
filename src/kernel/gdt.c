@@ -26,14 +26,14 @@ void        init_gdt(void)
 
   memcpy((char *) kgdtr.base, (char *) kgdt, kgdtr.lim);
 
-  __asm__("lgdtl (kgdtr)");
   __asm__("\
-    movw $0x10, %ax\n\
-    movw %ax, %ds\n \
-    movw %ax, %es\n\
-    movw %ax, %fs\n\
-    movw %ax, %gs\n\
-    ljmp $0x08, $next\n\
-  next:\n\
-  ");
+      lgdtl (kgdtr)\n\t\
+      movw $0x10, %ax\n\
+      movw %ax, %ds\n\t\
+      movw %ax, %es\n\t\
+      movw %ax, %fs\n\t\
+      movw %ax, %gs\n\t\
+      ljmp $0x08, $next\n\t\
+    next:\n\
+      ");
 }
