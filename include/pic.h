@@ -23,6 +23,9 @@
 #define ICW4_BUF_MASTER 0x0C        /* Buffered mode/master */
 #define ICW4_SFNM   0x10        /* Special fully nested (not) */
 
-void        PIC_remap(unsigned int, unsigned int);
+void PIC_remap(unsigned int, unsigned int);
+inline void outb(unsigned short, unsigned char);
+inline unsigned char inb(unsigned short);
+inline void io_wait(void);
 
 #endif /* INCLUDES_PIC */

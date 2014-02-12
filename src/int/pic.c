@@ -1,6 +1,6 @@
 #include    "pic.h"
 
-static inline void outb(unsigned short port, unsigned char val) {
+inline void outb(unsigned short port, unsigned char val) {
   __asm__ volatile ("\
       .intel_syntax\n\t\
       outb %0, %1\n\t\
@@ -10,7 +10,7 @@ static inline void outb(unsigned short port, unsigned char val) {
       );
 }
 
-static inline unsigned char inb(unsigned short port) {
+inline unsigned char inb(unsigned short port) {
   unsigned char ret;
   __asm__ volatile ("\
       .intel_syntax\n\t\
@@ -22,7 +22,7 @@ static inline unsigned char inb(unsigned short port) {
   return (ret);
 }
 
-static inline void io_wait(void) {
+inline void io_wait(void) {
   __asm__ volatile ("\
       jmp io\n\t\
       io: jmp io2\n\t\

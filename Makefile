@@ -11,6 +11,7 @@ SRCS_KERNEL		=	kernel/kernel.c		\
 					int/idt.c			\
 					int/isr.c			\
 					int/pic.c			\
+					int/kbmap.c			\
 					
 OBJS_KERNEL		=	$(addprefix $(OBJS_DIR), $(SRCS_KERNEL:.c=.o))
 
